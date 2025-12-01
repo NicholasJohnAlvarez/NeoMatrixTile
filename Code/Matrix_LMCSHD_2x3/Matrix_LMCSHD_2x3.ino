@@ -1,3 +1,8 @@
+// 12/1/25 - data line is connected to pin 21, limited to 8-12FPS
+// Recommended fix is to refresh each 16x16 panel with its own dedicated data channel, will require more wiring but much higher refresh. 
+// PC → Serial(2Mbaud) → ESP32 → FastLED_NeoMatrix → WS2812 chain (Pin 21)
+//     [0x42 + 3072 RGB565 bytes]     [48x32 bitmap]     [24k LEDs]
+
 #include <Adafruit_GFX.h>
 #include <FastLED_NeoMatrix.h>
 #include <FastLED.h>
@@ -19,7 +24,7 @@ uint16_t rawData[NUMMATRIX * 2]; // Two Bytes per pixel
 
 void setup() {
   FastLED.addLeds<WS2812B, PIN, GRB>(leds, NUMMATRIX);
-  Serial.begin(2000000);
+  Serial.begin(2000000); // 2M baud Hardware UART for video streaming
   matrix->setBrightness(BRIGHTNESS);
 }
 
